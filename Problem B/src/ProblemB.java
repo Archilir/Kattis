@@ -1,4 +1,4 @@
-public class Main {
+public class ProblemB {
 
     final static int _EARTHIAN_YEAR = 365,
                      _MARTIAN_YEAR  = 687;
@@ -22,7 +22,9 @@ public class Main {
         // Initializes Kattis' input/output utility class.
         Kattio io = new Kattio(System.in, System.out);
         StringBuilder sb = new StringBuilder();
+        ProblemB problemB = new ProblemB();
         int caseNo = 0;
+
         while (io.hasMoreTokens()) {
             int e = io.getInt();
             int m = io.getInt();
@@ -30,6 +32,7 @@ public class Main {
             caseNo += 1;
             sb.append("Case " + caseNo + ": " + days + "\n");
         }
+
         io.print(sb.toString());
         io.close();
     }
