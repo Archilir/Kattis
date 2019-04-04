@@ -1,57 +1,41 @@
+import java.util.Arrays;
+
 public class Main {
 
-    static int maxCurrent;
-
-    final static int TOTAL_BATTERY_NO  = 2,
-                     TOTAL_MAX_BATTERY = 4711,
+    final static int TOTAL_MAX_CURRENT = 4711,
                      INPUT_TERMINATOR  = 0;
 
-    static int calculate(int current, int batteries) {
-        if (current   == 0) return 0;
-        if (current   == 1) return 1;
-        if (batteries == 1) return current;
-
-        int minSteps = TOTAL_MAX_BATTERY;
-
-        for (int step = 1; step <= current; step++) {
-            int c = 1 + Math.max(
-                    calculate(current - step, batteries),
-                    calculate(step - 1, batteries - 1)
-            );
-            minSteps = Math.min(c, minSteps);
+    public static int[] generate() {
+        int[] refTable = new int[TOTAL_MAX_CURRENT + 1];
+        Arrays.fill(refTable, TOTAL_MAX_CURRENT);
+        refTable[0] = 0;
+        refTable[1] = 0;
+        for (int i = 2; i <= TOTAL_MAX_CURRENT; i++) {
+            for (int j = 1; j < i; j++) {
+                int r = 1 + Math.max(
+                        j - 1,
+                        refTable[i - j]
+                );
+                refTable[i] = Math.min(refTable[i], r);
+            }
         }
-
-        return minSteps;
+        return refTable;
     }
 
     public static void main(String[] args) {
         // Initializes Kattis' input/output utility class.
         Kattio io = new Kattio(System.in, System.out);
         StringBuilder sb = new StringBuilder();
-        boolean firstLine = true;
+        int[] referenceTable = generate();
 
-        while (io.hasMoreTokens()) {
-            // Read the value from input stream.
-            // If value equals to input terminator: exit input loop.
-            int maxCurrent = io.getInt();
-            if (maxCurrent == INPUT_TERMINATOR)
-                break;
-            if (!firstLine)
+        while(io.hasMoreTokens()) {
+            int current = io.getInt();
+            if (current != INPUT_TERMINATOR) {
+                sb.append(referenceTable[current]);
                 sb.append("\n");
-
-            int result;
-
-            // Test-case for 1 and 2 are known and can be predefined
-            if (maxCurrent == 1)
-                result = 0;
-            else if (maxCurrent == 2)
-                result = 1;
-            else
-                result = calculate(maxCurrent, TOTAL_BATTERY_NO);
-
-            sb.append(result);
-
-            if (firstLine) firstLine = false;
+            } else {
+                break;
+            }
         }
         io.print(sb.toString());
         io.close();
